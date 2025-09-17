@@ -7,15 +7,24 @@ import HomeScreen from "./src/screens/HomeScreen";
 import ProfileScreen from "./src/screens/ProfileScreen";
 import SettingScreen from "./src/screens/SettingScreen";
 
+export type RootStackParamList = {
+  SplashScreen: undefined;
+  SignUpScreen: undefined;
+  SignInScreen: undefined;
+  HomeScreen: undefined;
+  ProfileScreen: undefined;
+  SettingScreen: undefined;
+};
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Splash">
-        <Stack.Screen name="SplashScreen" component={SplashScreen} />
-        <Stack.Screen name="SignInScreen" component={SignInScreen} />
-        <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
+      <Stack.Navigator initialRouteName="SplashScreen" screenOptions={{animation:"fade"}}>
+        <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="SignUpScreen" component={SignUpScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="SignInScreen" component={SignInScreen} options={{ headerShown: false }} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
         <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
         <Stack.Screen name="SettingScreen" component={SettingScreen} />

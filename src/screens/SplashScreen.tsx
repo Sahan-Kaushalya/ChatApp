@@ -2,16 +2,30 @@ import { Image, StatusBar, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import "../../global.css"
 import CircleShape from "../components/CircleShape";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../App";
+
+type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'SplashScreen'>;
 
 export default function SplashScreen() {
 
- const opacity = useSharedValue(0);
-  
+  const navigation = useNavigation<NavigationProps>();
+
+  const opacity = useSharedValue(0);
+
   useEffect(() => {
-    opacity.value = withTiming(1, { duration: 3500});
-  }, []);
+    opacity.value = withTiming(1, { duration: 3500 });
+
+    const timeout = setTimeout(() => {
+      navigation.replace('SignUpScreen');
+    }, 4000);
+    return ()=>{
+      clearTimeout(timeout);
+    }
+  }, [navigation, opacity]);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -35,18 +49,18 @@ export default function SplashScreen() {
       <CircleShape width={150} height={150} className="bg-blue-500" borderRadius={999} bottomValue={-90} leftValue={80} opacity={0.5} />
       <CircleShape width={80} height={80} className="bg-blue-800" borderRadius={40} topValue={300} leftValue={100} opacity={0.4} />
 
-    
+
       <Animated.View style={animatedStyle}>
         <Image source={require("../../assets/logo.png")} style={{ width: 180, height: 220 }} />
       </Animated.View>
 
-<Animated.View className="absolute bottom-10" style={animatedStyle}>
-  <View className="flex flex-col items-center mb-10 align-middle ">
-        <Text className="text-sm font-bold text-center text-gray-600">POWERED BY : {process.env.EXPO_PUBLIC_APP_OWNER}</Text>
-        <Text className="text-sm font-bold text-center text-gray-500">VERSION : {process.env.EXPO_PUBLIC_APP_VERSION}</Text>
-      </View>
-</Animated.View>
-    
+      <Animated.View className="absolute bottom-10" style={animatedStyle}>
+        <View className="flex flex-col items-center mb-10 align-middle ">
+          <Text className="text-sm font-bold text-center text-gray-600">POWERED BY : {process.env.EXPO_PUBLIC_APP_OWNER}</Text>
+          <Text className="text-sm font-bold text-center text-gray-500">VERSION : {process.env.EXPO_PUBLIC_APP_VERSION}</Text>
+        </View>
+      </Animated.View>
+
     </SafeAreaView>
   );
 }
