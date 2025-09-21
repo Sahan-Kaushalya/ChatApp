@@ -23,7 +23,7 @@ export default function SplashScreen() {
     const timeout = setTimeout(() => {
       navigation.replace('SignUpScreen');
     }, 4000);
-    return ()=>{
+    return () => {
       clearTimeout(timeout);
     }
   }, [navigation, opacity]);
@@ -34,7 +34,7 @@ export default function SplashScreen() {
     };
   });
 
-   const {applied} = useTheme();
+  const { applied } = useTheme();
   const logo =
     applied === "dark"
       ? require("../../assets/logo-light.png")
