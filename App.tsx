@@ -6,6 +6,7 @@ import SignUpScreen from "./src/screens/SignUpScreen";
 import HomeScreen from "./src/screens/HomeScreen";
 import ProfileScreen from "./src/screens/ProfileScreen";
 import SettingScreen from "./src/screens/SettingScreen";
+import { ThemeProvider } from "./src/theme/ThemeProvider";
 
 export type RootStackParamList = {
   SplashScreen: undefined;
@@ -20,6 +21,7 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
+    <ThemeProvider>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="SplashScreen" screenOptions={{animation:"fade"}}>
         <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false }} />
@@ -30,5 +32,6 @@ export default function App() {
         <Stack.Screen name="SettingScreen" component={SettingScreen} />
       </Stack.Navigator>
     </NavigationContainer>
+    </ThemeProvider>
   );
 }

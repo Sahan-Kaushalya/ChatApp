@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useColorScheme } from "nativewind";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { ActivityIndicator } from "react-native";
 
 export type ThemeOption = 'light' | 'dark' | 'system';
@@ -21,7 +21,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const [isReady, setReady] = useState(false);
 
     useEffect(() => {
-        async () => {
+        (async () => {
             try {
                 const savedTheme = await AsyncStorage.getItem(THEME_KEY);
                 if (savedTheme === 'light' || savedTheme === 'dark') {
@@ -36,7 +36,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
             } finally {
                 setReady(true);
             }
-        };
+        })();
     }, [setColorScheme]);
 
     const setPreference = async (themeOption: ThemeOption) => {
@@ -75,7 +75,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useTheme() {
-    const context = createContext(ThemeContext);
+    const context = useContext(ThemeContext);
     if (!context) {
         throw new Error("useTheme must be used within a ThemeProvider");
     }

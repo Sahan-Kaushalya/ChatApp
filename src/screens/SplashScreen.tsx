@@ -7,6 +7,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-na
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../App";
+import { useTheme } from "../theme/ThemeProvider";
 
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'SplashScreen'>;
 
@@ -33,8 +34,14 @@ export default function SplashScreen() {
     };
   });
 
+   const {applied} = useTheme();
+  const logo =
+    applied === "dark"
+      ? require("../../assets/logo-light.png")
+      : require("../../assets/logo.png");
+
   return (
-    <SafeAreaView className="items-center justify-center flex-1 bg-white">
+    <SafeAreaView className="relative items-center justify-center flex-1 bg-slate-50 dark:bg-slate-900">
       <StatusBar hidden={true} />
       <CircleShape width={320} height={320} className="bg-blue-200" borderRadius={160} topValue={-170} leftValue={-120} opacity={0.85} />
       <CircleShape width={180} height={180} className="bg-blue-400" borderRadius={90} topValue={-90} rightValue={-60} opacity={0.8} />
@@ -51,13 +58,13 @@ export default function SplashScreen() {
 
 
       <Animated.View style={animatedStyle}>
-        <Image source={require("../../assets/logo.png")} style={{ width: 180, height: 220 }} />
+        <Image source={logo} style={{ width: 180, height: 220 }} />
       </Animated.View>
 
       <Animated.View className="absolute bottom-10" style={animatedStyle}>
         <View className="flex flex-col items-center mb-10 align-middle ">
-          <Text className="text-sm font-bold text-center text-gray-600">POWERED BY : {process.env.EXPO_PUBLIC_APP_OWNER}</Text>
-          <Text className="text-sm font-bold text-center text-gray-500">VERSION : {process.env.EXPO_PUBLIC_APP_VERSION}</Text>
+          <Text className="text-sm font-bold text-center text-gray-600 dark:text-slate-200">POWERED BY : {process.env.EXPO_PUBLIC_APP_OWNER}</Text>
+          <Text className="text-sm font-bold text-center text-gray-500 dark:text-slate-200">VERSION : {process.env.EXPO_PUBLIC_APP_VERSION}</Text>
         </View>
       </Animated.View>
 
