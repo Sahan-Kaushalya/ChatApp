@@ -1,6 +1,6 @@
 import { Image, StatusBar, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import "../../global.css"
+import "../../global.css";
 import CircleShape from "../components/CircleShape";
 import { useEffect } from "react";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
