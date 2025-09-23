@@ -5,8 +5,15 @@ import { Image, KeyboardAvoidingView, Platform, Pressable, StatusBar, Text, Text
 import { useTheme } from "../theme/ThemeProvider";
 import { FloatingLabelInput } from "react-native-floating-label-input";
 import { useState } from "react";
+import { RootStackParamList } from "../../App";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useNavigation } from "@react-navigation/native";
+
+type SignUpProps = NativeStackNavigationProp<RootStackParamList, 'SignUpScreen'>;
 
 export default function SignUpScreen() {
+
+     const navigation = useNavigation<SignUpProps>();
 
      const { applied } = useTheme();
      const [firstName, setFirstName] = useState("");
@@ -49,7 +56,9 @@ export default function SignUpScreen() {
                     </SafeAreaView>
                     <View className="absolute w-full p-5 bottom-5">
                          <Pressable className="items-center justify-center bg-green-600 rounded-full h-14">
-                              <Text className="text-2xl font-bold text-slate-100 dark:text-slate-100">
+                              <Text className="text-2xl font-bold text-slate-100 dark:text-slate-100"
+                              onPress={() => navigation.replace('ContactScreen')}
+                              >
                                    Next
                               </Text>
                          </Pressable>
