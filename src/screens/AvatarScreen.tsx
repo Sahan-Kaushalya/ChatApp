@@ -68,7 +68,7 @@ export default function AvatarScreen() {
                                 </View>
                             )}
                         </Pressable>
-                        <Text className="my-2 mt-5 text-lg font-bold text-slate-700 dark:text-slate-200">
+                        <Text className="my-2 mt-5 mb-5 text-lg font-bold text-slate-700 dark:text-slate-200">
                             Or select an Avatar</Text>
                         <FlatList
                             data={avatars}
