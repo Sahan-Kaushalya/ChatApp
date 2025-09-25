@@ -3,15 +3,18 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import * as ImagePicker from 'expo-image-picker';
 import { useState } from "react";
 import { useTheme } from "../theme/ThemeProvider";
+import { useUserRegistration } from "../components/UserContext";
 
 export default function AvatarScreen() {
     const [image, setImage] = useState<string | null>(null);
+    const { userData, setUserData } = useUserRegistration();
 
     const { applied } = useTheme();
     const logo =
         applied === "dark"
             ? require("../../assets/logo-light.png")
             : require("../../assets/logo.png");
+
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -23,6 +26,10 @@ export default function AvatarScreen() {
 
         if (!result.canceled) {
             setImage(result.assets[0].uri);
+            setUserData((previous) => ({
+                ...previous,
+                profileImage: result.assets[0].uri,
+            }));
         }
     };
 
@@ -75,7 +82,13 @@ export default function AvatarScreen() {
                             horizontal
                             keyExtractor={(_, index) => index.toString()}
                             renderItem={({ item }) => (<TouchableOpacity
-                                onPress={() => setImage(Image.resolveAssetSource(item).uri)}>
+                                onPress={() => {
+                                    setImage(Image.resolveAssetSource(item).uri);
+                                    setUserData((previous) => ({
+                                        ...previous,
+                                        profileImage: Image.resolveAssetSource(item).uri,
+                                    }));
+                                }}>
                                 <Image source={item}
                                     className="w-20 h-20 mx-2 border-2 border-gray-300 rounded-full" />
                             </TouchableOpacity>)}
@@ -89,6 +102,10 @@ export default function AvatarScreen() {
             </View>
             <View className="absolute bottom-0 left-0 right-0 w-full px-6 pb-6">
                 <Pressable className="items-center justify-center w-full bg-green-600 rounded-full h-14"
+                    onPress={() => {
+
+                        console.log(userData);
+                    }}
 
                 >
                     <Text className="text-2xl font-bold text-slate-100 dark:text-slate-100">

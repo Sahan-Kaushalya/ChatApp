@@ -1,11 +1,11 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 
 export interface UserRegistrationData {
-    firstName: String;
-    lastName: String;
-    contactNo: String;
-    countryCode: String;
-    profileImage: String | null;
+    firstName: string;
+    lastName: string;
+    contactNo: string;
+    countryCode: string;
+    profileImage: string | null;
 }
 
 interface UserRegistrationContextType {

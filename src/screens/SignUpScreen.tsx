@@ -1,6 +1,6 @@
 import { SafeAreaView } from "react-native-safe-area-context";
 import "../../global.css";
-import { AlertNotificationRoot } from "react-native-alert-notification";
+import { ALERT_TYPE, AlertNotificationRoot, Toast } from "react-native-alert-notification";
 import { Image, KeyboardAvoidingView, Platform, Pressable, StatusBar, Text, TextInput, View } from "react-native";
 import { useTheme } from "../theme/ThemeProvider";
 import { FloatingLabelInput } from "react-native-floating-label-input";
@@ -8,6 +8,8 @@ import { useState } from "react";
 import { RootStackParamList } from "../../App";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
+import { useUserRegistration } from "../components/UserContext";
+import { validateFirstName, validateLastName } from "../util/Validation";
 
 type SignUpProps = NativeStackNavigationProp<RootStackParamList, 'SignUpScreen'>;
 
@@ -15,9 +17,11 @@ export default function SignUpScreen() {
 
      const navigation = useNavigation<SignUpProps>();
 
-     const { applied } = useTheme();
      const [firstName, setFirstName] = useState("");
      const [lastName, setLastName] = useState("");
+
+     const { applied } = useTheme();
+     const { userData, setUserData } = useUserRegistration();
      const logo =
           applied === "dark"
                ? require("../../assets/logo-light.png")
@@ -41,24 +45,54 @@ export default function SignUpScreen() {
                          <View className="self-stretch">
                               <View className="w-full my-3">
                                    <FloatingLabelInput
-                                        value={firstName}
-                                        onChangeText={setFirstName}
+                                        value={userData.firstName}
+                                        onChangeText={(text) => {
+                                             setUserData((previous) => ({
+                                                  ...previous,
+                                                  firstName: text,
+                                             }));
+                                        }}
                                         label={"Enter Your First Name"}
                                    />
                               </View>
                               <View className="w-full my-3">
                                    <FloatingLabelInput
-                                        value={lastName}
-                                        onChangeText={setLastName}
+                                        value={userData.lastName}
+                                        onChangeText={(text) => {
+                                             setUserData((previous) => ({
+                                                  ...previous,
+                                                  lastName: text,
+                                             }));
+                                        }}
                                         label={"Enter Your Last Name"} />
                               </View>
                          </View>
                     </SafeAreaView>
                     <View className="absolute w-full p-5 bottom-5">
-                         <Pressable className="items-center justify-center bg-green-600 rounded-full h-14">
-                              <Text className="text-2xl font-bold text-slate-100 dark:text-slate-100"
-                              onPress={() => navigation.replace('ContactScreen')}
-                              >
+                         <Pressable className="items-center justify-center bg-green-600 rounded-full h-14"
+                              onPress={() => {
+                                   let validFname = validateFirstName(userData.firstName);
+                                   let validLname = validateLastName(userData.lastName);
+
+                                   if (validFname) { // skip null
+                                        Toast.show({
+                                             type: ALERT_TYPE.WARNING,
+                                             title: "WAERNING",
+                                             textBody: validFname,
+                                        });
+                                   } else if (validLname) { // skip null
+                                        Toast.show({
+                                             type: ALERT_TYPE.WARNING,
+                                             title: "WAERNING",
+                                             textBody: validLname,
+                                        });
+                                   } else {
+                                        navigation.replace('ContactScreen');
+                                   }
+
+                              }}
+                         >
+                              <Text className="text-2xl font-bold text-slate-100 dark:text-slate-100">
                                    Next
                               </Text>
                          </Pressable>
