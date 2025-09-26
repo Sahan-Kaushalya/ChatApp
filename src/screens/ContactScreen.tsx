@@ -9,8 +9,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import { useUserRegistration } from "../components/UserContext";
 import { validateCountryCode, validatePhoneNo } from "../util/Validation";
-import { ALERT_TYPE, Toast } from "react-native-alert-notification";
-
+import { ALERT_TYPE, AlertNotificationRoot, Toast } from "react-native-alert-notification";
 type ContactProps = NativeStackNavigationProp<RootStackParamList, 'ContactScreen'>;
 
 export default function ContactScreen() {
@@ -31,6 +30,7 @@ export default function ContactScreen() {
             ? require("../../assets/logo-light.png")
             : require("../../assets/logo.png");
     return (
+        <AlertNotificationRoot>
         <SafeAreaView className="items-center flex-1 bg-slate-100 dark:bg-slate-950">
             <StatusBar hidden={true} />
             <KeyboardAvoidingView
@@ -107,17 +107,23 @@ export default function ContactScreen() {
             <View className="absolute bottom-0 left-0 right-0 w-full px-6 pb-6">
                 <Pressable className="items-center justify-center w-full bg-green-600 rounded-full h-14"
                     onPress={() => {
+                        console.log("Button Press");
 
                         let validCountryCode = validateCountryCode(callingCode);
                         let validPhoneNo = validatePhoneNo(phoneNo);
 
+                         console.log(callingCode);
+                         console.log(phoneNo);
+                         
                         if (validCountryCode) { // skip null
+                             console.log("code ok Press");
                             Toast.show({
                                 type: ALERT_TYPE.WARNING,
                                 title: "WAERNING",
                                 textBody: validCountryCode,
                             });
                         } else if (validPhoneNo) { // skip null
+                             console.log("No ok Press");
                             Toast.show({
                                 type: ALERT_TYPE.WARNING,
                                 title: "WAERNING",
@@ -126,6 +132,7 @@ export default function ContactScreen() {
                         } else {
                             navigation.replace('AvatarScreen');
                         }
+
 
                         setUserData((previous) => ({
                             ...previous,
@@ -143,5 +150,6 @@ export default function ContactScreen() {
                 </Pressable>
             </View>
         </SafeAreaView>
+        </AlertNotificationRoot>
     );
 }

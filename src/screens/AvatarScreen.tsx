@@ -4,6 +4,8 @@ import * as ImagePicker from 'expo-image-picker';
 import { useState } from "react";
 import { useTheme } from "../theme/ThemeProvider";
 import { useUserRegistration } from "../components/UserContext";
+import { validateProfileImage } from "../util/Validation";
+import { ALERT_TYPE, Toast } from "react-native-alert-notification";
 
 export default function AvatarScreen() {
     const [image, setImage] = useState<string | null>(null);
@@ -104,7 +106,18 @@ export default function AvatarScreen() {
                 <Pressable className="items-center justify-center w-full bg-green-600 rounded-full h-14"
                     onPress={() => {
 
-                        console.log(userData);
+                        const validProfile = validateProfileImage(userData.profileImage
+                            ?{uri:userData.profileImage,type:"",fileSize:0}:null);
+
+                            if(validProfile){
+                                Toast.show({
+                                    type:ALERT_TYPE.WARNING,
+                                    title:"WARNING",
+                                    textBody:validProfile,
+                                });
+                            }else{
+                                console.log("Done");
+                            }
                     }}
 
                 >

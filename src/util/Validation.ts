@@ -15,29 +15,29 @@ export const validateLastName = (name: string): string | null => {
 }
 
 export const validateCountryCode = (countryCode: string): string | null => {
-   const regex = /^\+[1-9]\d{0-3}$/;
-    if (!countryCode) {
-        return "Country Code is Requried !";
-    }
+   const regex = /^\+[1-9]\d{0,2}$/; // + followed by 1-3 digits
+   if (!countryCode) {
+       return "Country Code is Required!";
+   }
 
-    if (!regex.test(countryCode)) {
-        return "Enter a Valid Country Code !";
-    }
+   if (!regex.test(countryCode)) {
+       return "Enter a Valid Country Code!";
+   }
 
-    return null;
+   return null;
 }
 
 export const validatePhoneNo = (phoneNo: string): string | null => {
-   const regex = /^[1-9][8-9]{6,14}$/;
-    if (!phoneNo) {
-        return "Contact Number is Requried !";
-    }
+   const regex = /^[1-9]\d{6,14}$/; // 7-15 digits, no leading zero
+   if (!phoneNo) {
+       return "Contact Number is Required!";
+   }
 
-    if (!regex.test(phoneNo)) {
-        return "Enter a Valid Contact Number !";
-    }
+   if (!regex.test(phoneNo)) {
+       return "Enter a Valid Contact Number!";
+   }
 
-    return null;
+   return null;
 }
 
 export const validateProfileImage = (image: {

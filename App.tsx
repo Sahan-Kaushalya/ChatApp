@@ -28,22 +28,22 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <AlertNotificationRoot>
-    <ThemeProvider>
-      <UserRegistrationProvider>
-        <NavigationContainer>
-          <Stack.Navigator initialRouteName="SignUpScreen" screenOptions={{ animation: "fade" }}>
-            <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="SignUpScreen" component={SignUpScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="ContactScreen" component={ContactScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="AvatarScreen" component={AvatarScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="SignInScreen" component={SignInScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="HomeScreen" component={HomeScreen} />
-            <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
-            <Stack.Screen name="SettingScreen" component={SettingScreen} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </UserRegistrationProvider>
-    </ThemeProvider>
+      <ThemeProvider>
+        <UserRegistrationProvider>
+          <NavigationContainer>
+            <Stack.Navigator initialRouteName="SignUpScreen" screenOptions={{ animation: "fade" }}>
+              <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="SignUpScreen" component={SignUpScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="ContactScreen" component={ContactScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="AvatarScreen" component={AvatarScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="SignInScreen" component={SignInScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="HomeScreen" component={HomeScreen} />
+              <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+              <Stack.Screen name="SettingScreen" component={SettingScreen} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </UserRegistrationProvider>
+      </ThemeProvider>
     </AlertNotificationRoot>
   );
 }
