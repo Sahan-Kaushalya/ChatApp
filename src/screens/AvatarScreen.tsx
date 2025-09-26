@@ -1,4 +1,4 @@
-import { Image, Pressable, StatusBar, Text, View, FlatList, TouchableOpacity } from "react-native";
+import { Image, Pressable, StatusBar, Text, View, FlatList, TouchableOpacity, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as ImagePicker from 'expo-image-picker';
 import { useState } from "react";
@@ -6,8 +6,18 @@ import { useTheme } from "../theme/ThemeProvider";
 import { useUserRegistration } from "../components/UserContext";
 import { validateProfileImage } from "../util/Validation";
 import { ALERT_TYPE, Toast } from "react-native-alert-notification";
+import { createNewAccount } from "../api/UserService";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../App";
+import { useNavigation } from "@react-navigation/native";
+
+type AvatarSceenProps = NativeStackNavigationProp<RootStackParamList, 'AvatarScreen'>;
 
 export default function AvatarScreen() {
+
+    const navigation = useNavigation<AvatarSceenProps>();
+    const [loading, setLoading] = useState(false);
+
     const [image, setImage] = useState<string | null>(null);
     const { userData, setUserData } = useUserRegistration();
 
@@ -104,26 +114,50 @@ export default function AvatarScreen() {
             </View>
             <View className="absolute bottom-0 left-0 right-0 w-full px-6 pb-6">
                 <Pressable className="items-center justify-center w-full bg-green-600 rounded-full h-14"
-                    onPress={() => {
+                disabled={loading?true:false}
+                    onPress={async () => {
 
                         const validProfile = validateProfileImage(userData.profileImage
-                            ?{uri:userData.profileImage,type:"",fileSize:0}:null);
+                            ? { uri: userData.profileImage, type: "", fileSize: 0 } : null);
 
-                            if(validProfile){
-                                Toast.show({
-                                    type:ALERT_TYPE.WARNING,
-                                    title:"WARNING",
-                                    textBody:validProfile,
-                                });
-                            }else{
-                                console.log("Done");
+                        if (validProfile) {
+                            Toast.show({
+                                type: ALERT_TYPE.WARNING,
+                                title: "WARNING",
+                                textBody: validProfile,
+                            });
+                        } else {
+                            try {
+                                setLoading(true);
+
+                                const respone = await createNewAccount(userData);
+                                if (respone.status) {
+                                    console.log(respone);
+                                    navigation.replace("HomeScreen");
+                                } else {
+                                    Toast.show({
+                                        type: ALERT_TYPE.WARNING,
+                                        title: "WARNING",
+                                        textBody: respone.message,
+                                    });
+
+                                }
+                            } catch (error) {
+                                console.error(error);
+                            } finally {
+                                 setLoading(false);
                             }
+                        }
                     }}
 
                 >
-                    <Text className="text-2xl font-bold text-slate-100 dark:text-slate-100">
-                        Create New Account
-                    </Text>
+                    {loading ? (
+                        <ActivityIndicator size={'large'} className="bg-green-600 text-slate-100" />
+                    ) : (
+                        <Text className="text-2xl font-bold text-slate-100 dark:text-slate-100">
+                            Create New Account
+                        </Text>)}
+
                 </Pressable>
             </View>
         </SafeAreaView>
