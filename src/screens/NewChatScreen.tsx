@@ -1,3 +1,3 @@
-export default function NewChatScreen() {
+export default function NewSingleChatScreen() {
      return (null);
 }

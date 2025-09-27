@@ -192,11 +192,12 @@ export default function HomeScreen() {
           placeholderTextColor={applied === "dark" ? "#d4d4d4" : "#64748b"}
           placeholder="Search"
           value={search}
-          onChangeText={(text) => setSearch(text)}
+          onChangeText={(text) => setSearch(text)} 
         />
       </View>
-      <View className="mt-1 pb-19">
-        <FlatList data={filterdChats} renderItem={renderItem} />
+      <View className="mt-1">
+        <FlatList data={filterdChats} renderItem={renderItem} contentContainerStyle={{ paddingBottom:60 }}
+/>
       </View>
       <View className="absolute w-20 h-20 bg-green-500 bottom-16 right-3 rounded-3xl">
         <TouchableOpacity className="items-center justify-center w-20 h-20 rounded-3xl">

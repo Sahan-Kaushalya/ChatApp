@@ -12,7 +12,8 @@ import AvatarScreen from "./src/screens/AvatarScreen";
 import { UserRegistrationProvider } from "./src/components/UserContext";
 import { AlertNotificationRoot } from "react-native-alert-notification";
 import HomeTabs from "./HomeTabs";
-import ChatScreen from "./src/screens/ChatScreen";
+import SingleChatScreen from "./src/screens/SingleChatScreen";
+
 
 export type RootStackParamList = {
   SplashScreen: undefined;
@@ -23,7 +24,12 @@ export type RootStackParamList = {
   HomeScreen: undefined;
   ProfileScreen: undefined;
   SettingScreen: undefined;
-  ChatScreen: undefined;
+  SingleChatScreen: {
+    chatID:number,
+    chatName:string,
+    lastSeenTime:string,
+    profileImage:string,
+  };
 };
 
 const Stack = createNativeStackNavigator();
@@ -34,7 +40,7 @@ export default function App() {
       <ThemeProvider>
         <UserRegistrationProvider>
           <NavigationContainer>
-            <Stack.Navigator initialRouteName="ChatScreen" screenOptions={{ animation: "fade" }}>
+            <Stack.Navigator initialRouteName="SingleChatScreen" screenOptions={{ animation: "fade" }}>
               <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false }} />
               <Stack.Screen name="SignUpScreen" component={SignUpScreen} options={{ headerShown: false }} />
               <Stack.Screen name="ContactScreen" component={ContactScreen} options={{ headerShown: false }} />
@@ -43,7 +49,7 @@ export default function App() {
               <Stack.Screen name="HomeScreen" component={HomeTabs} options={{ headerShown: false }}/>
               <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
               <Stack.Screen name="SettingScreen" component={SettingScreen} />
-              <Stack.Screen name="ChatScreen" component={ChatScreen} />
+              <Stack.Screen name="SingleChatScreen" component={SingleChatScreen} />
             </Stack.Navigator>
           </NavigationContainer>
         </UserRegistrationProvider>
