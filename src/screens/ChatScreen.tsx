@@ -1,3 +1,9 @@
+import { SafeAreaView } from "react-native-safe-area-context";
+
 export default function ChatScreen() {
-     return (null);
+     return (
+          <SafeAreaView>
+
+          </SafeAreaView>
+     );
 }

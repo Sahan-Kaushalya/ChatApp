@@ -2,6 +2,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import {
   FlatList,
   Image,
+  StatusBar,
   Text,
   TextInput,
   TouchableOpacity,
@@ -64,6 +65,54 @@ const chats = [
     unread: 2,
     profile: require("../../assets/avatar/avatar_6.png"),
   },
+    {
+    id: 7,
+    name: "Hasitha Lakmal",
+    lastMessage: "Mokada karanne Anjana",
+    time: "2025/09/18",
+    unread: 2,
+    profile: require("../../assets/avatar/avatar_7.png"),
+  },
+    {
+    id: 8,
+    name: "Hasitha Lakmal",
+    lastMessage: "Mokada karanne Anjana",
+    time: "2025/09/18",
+    unread: 2,
+    profile: require("../../assets/avatar/avatar_8.png"),
+  },
+    {
+    id: 9,
+    name: "Hasitha Lakmal",
+    lastMessage: "Mokada karanne Anjana",
+    time: "2025/09/18",
+    unread: 2,
+    profile: require("../../assets/avatar/avatar_9.png"),
+  },
+    {
+    id: 10,
+    name: "Hasitha Lakmal",
+    lastMessage: "Mokada karanne cAnjana Mokada karanne cAnjanaMokada karanne cAnjana ",
+    time: "2025/09/18",
+    unread: 2,
+    profile: require("../../assets/avatar/avatar_10.png"),
+  },
+     {
+    id: 11,
+    name: "Hasitha Lakmal",
+    lastMessage: "Mokada karanne Anjana",
+    time: "2025/09/18",
+    unread: 2,
+    profile: require("../../assets/avatar/avatar_10.png"),
+  },
+     {
+    id: 12,
+    name: "Hasitha Lakmal",
+    lastMessage: "Mokada karanne Anjana",
+    time: "2025/09/18",
+    unread: 2,
+    profile: require("../../assets/avatar/avatar_10.png"),
+  },
 ];
 
 type HomeScreenProps = NativeStackNavigationProp<RootStackParamList, "HomeScreen">;
@@ -110,7 +159,7 @@ export default function HomeScreen() {
           >
             {item.name}
           </Text>
-          <Text className="text-xs font-bold text-gray-50">{item.time}</Text>
+          <Text className="text-xs font-bold text-gray-500">{item.time}</Text>
         </View>
         <View className="flex-row items-center justify-between">
           <Text
@@ -135,6 +184,7 @@ export default function HomeScreen() {
       className="flex-1 p-0 bg-white dark:bg-slate-950"
       edges={["right", "bottom", "left"]}
     >
+      <StatusBar hidden={false}/>
       <View className="flex-row items-center px-3 mx-2 mt-3 border-2 border-gray-300 rounded-full h-14">
         <Ionicons name="search" size={20} color={"gray"} />
         <TextInput
@@ -145,10 +195,10 @@ export default function HomeScreen() {
           onChangeText={(text) => setSearch(text)}
         />
       </View>
-      <View className="mt-1">
+      <View className="mt-1 pb-19">
         <FlatList data={filterdChats} renderItem={renderItem} />
       </View>
-      <View className="absolute w-20 h-20 bg-green-500 bottom-16 right-12 rounded-3xl">
+      <View className="absolute w-20 h-20 bg-green-500 bottom-16 right-3 rounded-3xl">
         <TouchableOpacity className="items-center justify-center w-20 h-20 rounded-3xl">
           <Ionicons name="chatbox-ellipses" size={26} color="white" />
         </TouchableOpacity>

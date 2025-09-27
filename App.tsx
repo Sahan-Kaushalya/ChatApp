@@ -11,6 +11,8 @@ import ContactScreen from "./src/screens/ContactScreen";
 import AvatarScreen from "./src/screens/AvatarScreen";
 import { UserRegistrationProvider } from "./src/components/UserContext";
 import { AlertNotificationRoot } from "react-native-alert-notification";
+import HomeTabs from "./HomeTabs";
+import ChatScreen from "./src/screens/ChatScreen";
 
 export type RootStackParamList = {
   SplashScreen: undefined;
@@ -21,6 +23,7 @@ export type RootStackParamList = {
   HomeScreen: undefined;
   ProfileScreen: undefined;
   SettingScreen: undefined;
+  ChatScreen: undefined;
 };
 
 const Stack = createNativeStackNavigator();
@@ -31,15 +34,16 @@ export default function App() {
       <ThemeProvider>
         <UserRegistrationProvider>
           <NavigationContainer>
-            <Stack.Navigator initialRouteName="HomeScreen" screenOptions={{ animation: "fade" }}>
+            <Stack.Navigator initialRouteName="ChatScreen" screenOptions={{ animation: "fade" }}>
               <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false }} />
               <Stack.Screen name="SignUpScreen" component={SignUpScreen} options={{ headerShown: false }} />
               <Stack.Screen name="ContactScreen" component={ContactScreen} options={{ headerShown: false }} />
               <Stack.Screen name="AvatarScreen" component={AvatarScreen} options={{ headerShown: false }} />
               <Stack.Screen name="SignInScreen" component={SignInScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="HomeScreen" component={HomeScreen} />
+              <Stack.Screen name="HomeScreen" component={HomeTabs} options={{ headerShown: false }}/>
               <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
               <Stack.Screen name="SettingScreen" component={SettingScreen} />
+              <Stack.Screen name="ChatScreen" component={ChatScreen} />
             </Stack.Navigator>
           </NavigationContainer>
         </UserRegistrationProvider>
