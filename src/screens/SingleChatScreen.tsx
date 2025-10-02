@@ -41,8 +41,9 @@ export default function SingleChatScreen({ route, navigation }: SingleChatScreen
   // ✅ Correct params destructuring
   const { chatID, friendName, lastSeenTime, profileImage } = route.params;
 
-  const messages = useSingleChat(chatID);
-
+  const singleChat = useSingleChat(chatID);
+  const messages = singleChat.messages;
+  const friend = singleChat.friend;
   const [input, setInput] = useState("");
   const sendMessage = useSendChat();
   const flatListRef = useRef<FlatList>(null);
@@ -52,15 +53,29 @@ export default function SingleChatScreen({ route, navigation }: SingleChatScreen
       title: "",
       headerLeft: () => (
         <View className="flex-row items-center gap-2">
-          <Image
-            source={{ uri: profileImage }}
-            className="p-1 border-2 border-gray-500 rounded-full h-14 w-14"
-          />
-          <View className="space-y-3">
-            <Text className="text-2xl font-bold">{friendName}</Text>
+          <TouchableOpacity className="items-center justify-center" onPress={()=>{navigation.goBack()}}>
+          <Ionicons name="arrow-back-sharp" size={24} color="black" />
+        </TouchableOpacity>
+           <TouchableOpacity className="items-center justify-center border-gray-300 rounded-full h-14 w-14 border-1">
+            {profileImage ? (
+              <Image
+                source={{ uri: profileImage }}
+                className="rounded-full w-14 h-14"
+              />
+            ) : (
+              <View className="items-start justify-center bg-gray-300 rounded-full h-14 w-14">
+                <Text className="text-lg font-bold">
+                  {friendName.trim().charAt(0).toUpperCase()}
+                </Text>
+              </View>
+            )}
+          </TouchableOpacity>
+
+          <View className="space-y-2">
+            <Text className="text-2xl font-bold">{friend?.firstName} {friend?.lastName}</Text>
             <Text className="text-xs italic font-semibold">
-              Pending
-              </Text>
+              {friend?.status === "ONLINE"?"Online":`Last seen ${formatChatTime(friend?.updatedAt ??"")}`}
+            </Text>
           </View>
         </View>
       ),
@@ -70,17 +85,16 @@ export default function SingleChatScreen({ route, navigation }: SingleChatScreen
         </TouchableOpacity>
       ),
     });
-  }, [navigation, friendName, lastSeenTime, profileImage]);
+  }, [navigation, friend]);
 
   const renderItem = ({ item }: { item: Chat }) => {
     const isMe = item.from.id !== chatID;
     return (
       <View
-        className={`my-1 px-3 max-w-[75%] ${
-          isMe
+        className={`my-1 px-3 max-w-[75%] ${isMe
             ? "self-end bg-green-500 rounded-tl-xl rounded-bl-xl rounded-br-xl"
             : "self-start bg-gray-500 rounded-tr-xl rounded-bl-xl rounded-br-xl"
-        }`}
+          }`}
       >
         <Text className="mt-2 text-base text-white">{item.message}</Text>
         <View className="flex-row items-center justify-end mt-1">
@@ -91,8 +105,8 @@ export default function SingleChatScreen({ route, navigation }: SingleChatScreen
                 item.status === "READ"
                   ? "checkmark-done"
                   : item.status === "DELIVERED"
-                  ? "checkmark-done"
-                  : "checkmark"
+                    ? "checkmark-done"
+                    : "checkmark"
               }
               size={16}
               color={item.status === "READ" ? "#1d4ed8" : "#f0f9ff"}
@@ -103,11 +117,11 @@ export default function SingleChatScreen({ route, navigation }: SingleChatScreen
     );
   };
 
-  const handleSendChat=()=>{
-    if(!input.trim()){
+  const handleSendChat = () => {
+    if (!input.trim()) {
       return;
     }
-    sendMessage(chatID,input);
+    sendMessage(chatID, input);
     setInput("");
   };
 
@@ -122,7 +136,7 @@ export default function SingleChatScreen({ route, navigation }: SingleChatScreen
           ref={flatListRef}
           data={messages}
           renderItem={renderItem}
-          keyExtractor={(_,index) => index.toString()}
+          keyExtractor={(_, index) => index.toString()}
           className="px-3 mt-2"
           inverted
           onContentSizeChange={() =>

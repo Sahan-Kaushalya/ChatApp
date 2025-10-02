@@ -11,8 +11,6 @@ export default function ChatsScreen() {
      return (
           <Stack.Navigator>
                <Stack.Screen name="HomeScreen" component={HomeScreen}/>
-               <Stack.Screen name="SettingScreen" component={SettingScreen}/>
-               <Stack.Screen name="SingleChatScreen" component={SingleChatScreen}/>
           </Stack.Navigator>
      );
 }

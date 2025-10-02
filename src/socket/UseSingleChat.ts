@@ -20,7 +20,9 @@ export function useSingleChat(friendId: number) {
             }
 
             if (response.type === "friend_data") {
-                console.log(response.payload);
+                
+                 setFriend(response.payload);
+                 return friend;
             }
 
             if (response.type === "new_message" && response.payload.to.id === friendId) {
@@ -37,5 +39,5 @@ export function useSingleChat(friendId: number) {
 
     }, [socket, friendId]);
 
-    return messages;
+    return {messages:messages,friend:friend};
 }
