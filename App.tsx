@@ -13,6 +13,7 @@ import { UserRegistrationProvider } from "./src/components/UserContext";
 import { AlertNotificationRoot } from "react-native-alert-notification";
 import HomeTabs from "./HomeTabs";
 import SingleChatScreen from "./src/screens/SingleChatScreen";
+import { WebSocketProvider } from "./src/socket/WebSocketProvider";
 
 
 export type RootStackParamList = {
@@ -26,21 +27,23 @@ export type RootStackParamList = {
   SettingScreen: undefined;
   SingleChatScreen: {
     chatID:number,
-    chatName:string,
+    friendName:string,
     lastSeenTime:string,
     profileImage:string,
   };
 };
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
+  const USER_ID=1;
   return (
     <AlertNotificationRoot>
+      <WebSocketProvider userId={USER_ID}>
       <ThemeProvider>
         <UserRegistrationProvider>
           <NavigationContainer>
-            <Stack.Navigator initialRouteName="SingleChatScreen" screenOptions={{ animation: "fade" }}>
+            <Stack.Navigator initialRouteName="HomeScreen" screenOptions={{ animation: "fade" }}>
               <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false }} />
               <Stack.Screen name="SignUpScreen" component={SignUpScreen} options={{ headerShown: false }} />
               <Stack.Screen name="ContactScreen" component={ContactScreen} options={{ headerShown: false }} />
@@ -54,6 +57,7 @@ export default function App() {
           </NavigationContainer>
         </UserRegistrationProvider>
       </ThemeProvider>
+      </WebSocketProvider>
     </AlertNotificationRoot>
   );
 }

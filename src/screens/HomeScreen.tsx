@@ -15,105 +15,9 @@ import { useLayoutEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { RootStackParamList } from "../../App";
 import { useTheme } from "../theme/ThemeProvider";
+import { useChatList } from "../socket/UseChatList";
+import { formatChatTime } from "../util/DateFormatter";
 
-const chats = [
-  {
-    id: 1,
-    name: "Sahan Perera",
-    lastMessage: "Hello, Kamal",
-    time: "9:46 pm",
-    unread: 2,
-    profile: require("../../assets/avatar/avatar_1.png"),
-  },
-  {
-    id: 2,
-    name: "Fathima",
-    lastMessage: "Hello, Sahn. Oyata kohomada",
-    time: "Yesterday",
-    unread: 0,
-    profile: require("../../assets/avatar/avatar_2.png"),
-  },
-  {
-    id: 3,
-    name: "Nayana",
-    lastMessage: "Hello, Kamal",
-    time: "2025/9/24",
-    unread: 2,
-    profile: require("../../assets/avatar/avatar_3.png"),
-  },
-  {
-    id: 4,
-    name: "Tharaka Sankalpa Sir",
-    lastMessage: "Sir,",
-    time: "10.00 pm",
-    unread: 1,
-    profile: require("../../assets/avatar/avatar_4.png"),
-  },
-  {
-    id: 5,
-    name: "Pansilu Piyumantha ACH",
-    lastMessage: "Mokada Karanne",
-    time: "2025/09/20",
-    unread: 2,
-    profile: require("../../assets/avatar/avatar_5.png"),
-  },
-  {
-    id: 6,
-    name: "Hasitha Lakmal",
-    lastMessage: "Mokada karanne Anjana",
-    time: "2025/09/18",
-    unread: 2,
-    profile: require("../../assets/avatar/avatar_6.png"),
-  },
-    {
-    id: 7,
-    name: "Hasitha Lakmal",
-    lastMessage: "Mokada karanne Anjana",
-    time: "2025/09/18",
-    unread: 2,
-    profile: require("../../assets/avatar/avatar_7.png"),
-  },
-    {
-    id: 8,
-    name: "Hasitha Lakmal",
-    lastMessage: "Mokada karanne Anjana",
-    time: "2025/09/18",
-    unread: 2,
-    profile: require("../../assets/avatar/avatar_8.png"),
-  },
-    {
-    id: 9,
-    name: "Hasitha Lakmal",
-    lastMessage: "Mokada karanne Anjana",
-    time: "2025/09/18",
-    unread: 2,
-    profile: require("../../assets/avatar/avatar_9.png"),
-  },
-    {
-    id: 10,
-    name: "Hasitha Lakmal",
-    lastMessage: "Mokada karanne cAnjana Mokada karanne cAnjanaMokada karanne cAnjana ",
-    time: "2025/09/18",
-    unread: 2,
-    profile: require("../../assets/avatar/avatar_10.png"),
-  },
-     {
-    id: 11,
-    name: "Hasitha Lakmal",
-    lastMessage: "Mokada karanne Anjana",
-    time: "2025/09/18",
-    unread: 2,
-    profile: require("../../assets/avatar/avatar_10.png"),
-  },
-     {
-    id: 12,
-    name: "Hasitha Lakmal",
-    lastMessage: "Mokada karanne Anjana",
-    time: "2025/09/18",
-    unread: 2,
-    profile: require("../../assets/avatar/avatar_10.png"),
-  },
-];
 
 type HomeScreenProps = NativeStackNavigationProp<RootStackParamList, "HomeScreen">;
 
@@ -121,6 +25,8 @@ export default function HomeScreen() {
   const navigation = useNavigation<HomeScreenProps>();
   const [search, setSearch] = useState("");
   const { applied } = useTheme();
+
+  const chatList = useChatList();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -140,38 +46,46 @@ export default function HomeScreen() {
     });
   }, [navigation]);
 
-  const filterdChats = chats.filter((chat) => {
+  const filterdChats = chatList.filter((chat) => {
     return (
-      chat.name.toLowerCase().includes(search.toLowerCase()) ||
+      chat.friendName.toLowerCase().includes(search.toLowerCase()) ||
       chat.lastMessage.toLowerCase().includes(search.toLowerCase())
     );
   });
 
   const renderItem = ({ item }: any) => (
-    <TouchableOpacity className="flex-row items-center py-2 px-3 bg-gray-100 my-0.5 dark:bg-slate-900">
-      <Image source={item.profile} className="w-20 h-20 rounded-full" />
+    <TouchableOpacity className="flex-row items-center py-2 px-3 bg-gray-100 my-0.5 dark:bg-slate-900"
+    onPress={()=>{
+      navigation.navigate("SingleChatScreen",{
+        chatID:item.friendId,
+        friendName:item.friendName,
+        lastSeenTime:formatChatTime(item.lastTimeStamp),
+        profileImage:item.profileImage,
+      });
+    }}>
+      <Image source={{uri:item.profileImage}} className="w-20 h-20 rounded-full" />
       <View className="flex-1">
         <View className="flex-row justify-between">
           <Text
-            className="text-xl font-bold text-gray-600 dark:text-slate-300"
+            className="text-xl font-bold text-gray-600 dark:text-slate-300 ms-3"
             numberOfLines={1}
             ellipsizeMode="tail"
           >
-            {item.name}
+            {item.friendName}
           </Text>
-          <Text className="text-xs font-bold text-gray-500">{item.time}</Text>
+          <Text className="text-xs font-bold text-gray-500">{formatChatTime(item.lastTimeStamp)}</Text>
         </View>
         <View className="flex-row items-center justify-between">
           <Text
-            className="flex-1 text-base text-gray-500"
+            className="flex-1 text-base text-gray-500 ms-3"
             numberOfLines={1}
             ellipsizeMode="tail"
           >
             {item.lastMessage}
           </Text>
-          {item.unread > 0 && (
+          {item.unreadCount > 0 && (
             <View className="px-2 py-2 bg-green-500 rounded-full ms-2">
-              <Text className="text-xs font-bold text-slate-50">{item.unread}</Text>
+              <Text className="text-xs font-bold text-slate-50">{item.unreadCount}</Text>
             </View>
           )}
         </View>

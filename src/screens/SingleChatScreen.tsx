@@ -1,7 +1,9 @@
 import { SafeAreaView } from "react-native-safe-area-context";
 import { RootStackParamList } from "../../App";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useNavigation } from "@react-navigation/native";
+import {
+  NativeStackNavigationProp,
+} from "@react-navigation/native-stack";
+import { RouteProp, useNavigation } from "@react-navigation/native";
 import { useLayoutEffect, useState, useRef } from "react";
 import {
   FlatList,
@@ -14,68 +16,35 @@ import {
   View,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useSingleChat } from "../socket/UseSingleChat";
+import { Chat } from "../socket/chat";
+import { formatChatTime } from "../util/DateFormatter";
+import { useSendChat } from "../socket/UseSendChat";
 
 type Message = {
   id: number;
   text: string;
   sender: "me" | "friend";
   time: string;
-  status?: "sent" | "delivered" | "read";
+  status?: "SEND" | "delivered" | "read";
 };
 
-type SingleChatScreenProps = NativeStackNavigationProp<
-  RootStackParamList,
-  "SingleChatScreen"
->;
+type SingleChatScreenProps = {
+  route: RouteProp<RootStackParamList, "SingleChatScreen">;
+  navigation: NativeStackNavigationProp<
+    RootStackParamList,
+    "SingleChatScreen"
+  >;
+};
 
-export default function SingleChatScreen() {
-  const navigation = useNavigation<SingleChatScreenProps>();
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 1,
-      text: "Hey! How are you?",
-      sender: "friend",
-      time: "10:15 AM",
-      status: "read",
-    },
-    {
-      id: 2,
-      text: "I’m good, just working on my project.",
-      sender: "me",
-      time: "10:16 AM",
-      status: "read",
-    },
-    {
-      id: 3,
-      text: "Nice! What project is it?",
-      sender: "friend",
-      time: "10:17 AM",
-      status: "delivered",
-    },
-    {
-      id: 4,
-      text: "A chat app with React Native 🚀",
-      sender: "me",
-      time: "10:18 AM",
-      status: "read",
-    },
-    {
-      id: 5,
-      text: "That’s awesome! Need any help?",
-      sender: "friend",
-      time: "10:20 AM",
-      status: "delivered",
-    },
-    {
-      id: 6,
-      text: "Thanks! I’ll let you know if I get stuck.",
-      sender: "me",
-      time: "10:21 AM",
-      status: "sent",
-    },
-  ]);
+export default function SingleChatScreen({ route, navigation }: SingleChatScreenProps) {
+  // ✅ Correct params destructuring
+  const { chatID, friendName, lastSeenTime, profileImage } = route.params;
+
+  const messages = useSingleChat(chatID);
 
   const [input, setInput] = useState("");
+  const sendMessage = useSendChat();
   const flatListRef = useRef<FlatList>(null);
 
   useLayoutEffect(() => {
@@ -84,14 +53,14 @@ export default function SingleChatScreen() {
       headerLeft: () => (
         <View className="flex-row items-center gap-2">
           <Image
-            source={require("../../assets/avatar/avatar_1.png")}
+            source={{ uri: profileImage }}
             className="p-1 border-2 border-gray-500 rounded-full h-14 w-14"
           />
           <View className="space-y-3">
-            <Text className="text-2xl font-bold">Sahan Perera</Text>
+            <Text className="text-2xl font-bold">{friendName}</Text>
             <Text className="text-xs italic font-semibold">
-              Last seen today at 11:00 am
-            </Text>
+              Pending
+              </Text>
           </View>
         </View>
       ),
@@ -101,32 +70,32 @@ export default function SingleChatScreen() {
         </TouchableOpacity>
       ),
     });
-  }, [navigation]);
+  }, [navigation, friendName, lastSeenTime, profileImage]);
 
-  const renderItem = ({ item }: { item: Message }) => {
-    const isMe = item.sender === "me";
+  const renderItem = ({ item }: { item: Chat }) => {
+    const isMe = item.from.id !== chatID;
     return (
       <View
         className={`my-1 px-3 max-w-[75%] ${
           isMe
             ? "self-end bg-green-500 rounded-tl-xl rounded-bl-xl rounded-br-xl"
-            : "rounded-tr-xl rounded-bl-xl rounded-br-xl self-start bg-gray-500"
+            : "self-start bg-gray-500 rounded-tr-xl rounded-bl-xl rounded-br-xl"
         }`}
       >
-        <Text className="mt-2 text-base text-white">{item.text}</Text>
+        <Text className="mt-2 text-base text-white">{item.message}</Text>
         <View className="flex-row items-center justify-end mt-1">
-          <Text className="text-xs italic text-white me-2">{item.time}</Text>
+          <Text className="text-xs italic text-white me-2">{formatChatTime(item.createdAt)}</Text>
           {isMe && (
             <Ionicons
               name={
-                item.status === "read"
+                item.status === "READ"
                   ? "checkmark-done"
-                  : item.status === "delivered"
+                  : item.status === "DELIVERED"
                   ? "checkmark-done"
                   : "checkmark"
               }
               size={16}
-              color={item.status === "read" ? "#1d4ed8" : "#f0f9ff"}
+              color={item.status === "READ" ? "#1d4ed8" : "#f0f9ff"}
             />
           )}
         </View>
@@ -134,42 +103,28 @@ export default function SingleChatScreen() {
     );
   };
 
-  const sendMessage = () => {
-    if (input.trim()) {
-      const newMsg: Message = {
-        id: Date.now(),
-        text: input,
-        sender: "me",
-        time: new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-        status: "sent",
-      };
-
-      setMessages([...messages, newMsg]); // ✅ append
-      setInput("");
-      flatListRef.current?.scrollToEnd({ animated: true }); // ✅ auto scroll
-      console.log(newMsg);
+  const handleSendChat=()=>{
+    if(!input.trim()){
+      return;
     }
+    sendMessage(chatID,input);
+    setInput("");
   };
 
   return (
-    <SafeAreaView
-      className="flex-1 bg-slate-100"
-      edges={["bottom", "right", "left"]}
-    >
+    <SafeAreaView className="flex-1 bg-slate-100" edges={["bottom", "right", "left"]}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "android" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "android" ? 100 : 100}
+        keyboardVerticalOffset={100}
         className="flex-1"
       >
         <FlatList
           ref={flatListRef}
           data={messages}
           renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
-          className="px-3"
+          keyExtractor={(_,index) => index.toString()}
+          className="px-3 mt-2"
+          inverted
           onContentSizeChange={() =>
             flatListRef.current?.scrollToEnd({ animated: true })
           }
@@ -177,14 +132,14 @@ export default function SingleChatScreen() {
         <View className="flex-row items-end p-2 bg-slate-200">
           <TextInput
             value={input}
-            onChangeText={(text) => setInput(text)}
+            onChangeText={setInput}
             multiline
             placeholder="Type a message"
             className="flex-1 h-auto px-5 py-2 text-base bg-gray-200 min-h-14 max-h-32 rounded-3xl"
           />
           <TouchableOpacity
             className="items-center justify-center bg-green-600 rounded-full w-14 h-14"
-            onPress={sendMessage}
+            onPress={handleSendChat}
           >
             <Ionicons name="send" size={24} color="white" />
           </TouchableOpacity>
