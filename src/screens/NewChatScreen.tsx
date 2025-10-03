@@ -118,7 +118,7 @@ export default function NewChatScreen() {
         <View className="px-2 py-2 my-2 border-b-2 border-b-green-500">
           <TouchableOpacity
             className="flex-row items-center justify-start gap-x-3 h-14"
-          //   onPress={() => navigation.navigate("NewContactScreen")}
+             onPress={() => navigation.navigate("NewContactScreen")}
           >
             <View className="items-center justify-center w-12 h-12 bg-green-600 rounded-full">
               <Feather name="user-plus" size={24} color="white" />

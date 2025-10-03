@@ -15,6 +15,7 @@ import HomeTabs from "./HomeTabs";
 import SingleChatScreen from "./src/screens/SingleChatScreen";
 import { WebSocketProvider } from "./src/socket/WebSocketProvider";
 import NewChatScreen from "./src/screens/NewChatScreen";
+import NewContactScreen from "./src/screens/NewContactScreen";
 
 
 export type RootStackParamList = {
@@ -33,6 +34,7 @@ export type RootStackParamList = {
     profileImage: string,
   };
   NewChatScreen: undefined;
+  NewContactScreen: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -55,7 +57,8 @@ export default function App() {
                 <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
                 <Stack.Screen name="SingleChatScreen" component={SingleChatScreen} />
                 <Stack.Screen name="SettingScreen" component={SettingScreen} />
-                <Stack.Screen name="NewChatScreen" component={NewChatScreen}/>
+                <Stack.Screen name="NewChatScreen" component={NewChatScreen} />
+                <Stack.Screen name="NewContactScreen" component={NewContactScreen} />
               </Stack.Navigator>
             </NavigationContainer>
           </UserRegistrationProvider>
