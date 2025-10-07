@@ -2,6 +2,8 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import {
   FlatList,
   Image,
+  Modal,
+  Pressable,
   StatusBar,
   Text,
   TextInput,
@@ -11,12 +13,13 @@ import {
 
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useLayoutEffect, useState } from "react";
+import { useContext, useLayoutEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { RootStackParamList } from "../../App";
 import { useTheme } from "../theme/ThemeProvider";
 import { useChatList } from "../socket/UseChatList";
 import { formatChatTime } from "../util/DateFormatter";
+import { AuthContext } from "../components/AuthProvider";
 
 
 type HomeScreenProps = NativeStackNavigationProp<RootStackParamList, "HomeScreen">;
@@ -25,8 +28,10 @@ export default function HomeScreen() {
   const navigation = useNavigation<HomeScreenProps>();
   const [search, setSearch] = useState("");
   const { applied } = useTheme();
-
+  const [isModelVisible, setModelVisible] = useState(false);
+   const auth = useContext(AuthContext);
   const chatList = useChatList();
+
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -37,14 +42,63 @@ export default function HomeScreen() {
           <TouchableOpacity className="me-5">
             <Ionicons name="camera" size={26} color="black" />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => setModelVisible(true)}>
             <Ionicons name="ellipsis-vertical" size={24} color="black" />
           </TouchableOpacity>
+          <Modal animationType="fade" visible={isModelVisible} onRequestClose={() => setModelVisible(false)}
+            transparent={true}>
+            <Pressable className="flex-1 bg-transparent "
+              onPress={() => setModelVisible(false)}>
+
+              <Pressable onPress={(e) => {
+                e.stopPropagation(); // prevent the press event
+              }}>
+
+                {/* root modal View */}
+                <View className="items-end justify-end p-5" style={{
+                  shadowColor:"#000",
+                  shadowOffset:{
+                    width:0,
+                    height:2,
+                  },
+                  shadowOpacity:0.25,
+                  shadowRadius:4,
+                  elevation:5,
+                }}>
+                  {/* content View */}
+                  <View className="w-40 p-2 rounded-md bg-slate-100 me-6">
+                    <TouchableOpacity className="items-start justify-center h-12 my-2 border-b-2 border-gray-300"
+                    onPress={()=> {
+                      navigation.navigate("SettingScreen")
+                      setModelVisible(false);
+                    }}>
+                      <Text className="text-lg font-bold">Settings</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity className="items-start justify-center h-12 my-2 border-b-2 border-gray-300"
+                    onPress={()=> {
+                      navigation.navigate("ProfileScreen"),
+                      setModelVisible(false);
+                    }}>
+                      <Text className="text-lg font-bold">My Profile</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity className="items-start justify-center h-12 my-2 border-b-2 border-gray-300"
+                     onPress={async()=> {
+                      if(auth) await auth.signOut(),
+                      setModelVisible(false);
+                    }}>
+                      <Text className="text-lg font-bold">Logout</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </Pressable>
+
+            </Pressable>
+          </Modal>
         </View>
       ),
       contentStyle: { marginBottom: 0 },
     });
-  }, [navigation]);
+  }, [navigation, isModelVisible]);
 
   const filterdChats = [...chatList].filter((chat) => {
     return (

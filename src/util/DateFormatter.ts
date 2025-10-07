@@ -5,9 +5,8 @@ export function formatChatTime(timestamp: string): string {
 
     const isToday = date.getDate() === now.getDate() && date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
 
-    const yesterday = new Date(); // 2025-09-29
-    yesterday.setDate(now.getDate() - 1); // 29-1=28 => 2025-09-28
-
+    const yesterday = new Date();
+    yesterday.setDate(now.getDate() - 1); 
     const isYesterday =
         date.getDate() === yesterday.getDate() &&
         date.getMonth() === yesterday.getMonth() &&
@@ -19,7 +18,7 @@ export function formatChatTime(timestamp: string): string {
         hour12: true,
     });
 
-    if (isToday) return timeStr; // 11:19 AM
-    if (isYesterday) return `Yesterday ${timeStr}`; // Yesterday 11:09 AM
-    return `${date.toLocaleDateString()} ${timeStr}`; // 2025-09-26 11:09 AM
+    if (isToday) return timeStr; 
+    if (isYesterday) return `Yesterday ${timeStr}`; 
+    return `${date.toLocaleDateString()} ${timeStr}`; 
 }

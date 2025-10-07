@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { User, WSResponse } from "./chat";
 import { useWebSocket } from "./WebSocketProvider";
+import { ALERT_TYPE, Toast } from "react-native-alert-notification";
 
 export function useSendNewContact() {
 
@@ -23,8 +24,25 @@ export function useSendNewContact() {
         const onMessage = (event: MessageEvent) => {
             const response: WSResponse = JSON.parse(event.data);
             if (response.type === "new_contact_response_text") {
-                console.log(response.payload);
                 setResponseText(response.payload);
+
+                if(response.payload.responseStatus){
+                    Toast.show({
+                        type:ALERT_TYPE.SUCCESS,
+                        title:"Success",
+                        textBody:response.payload.message,
+                        autoClose: true
+                    });
+                }else{
+                    Toast.show({
+                        type:ALERT_TYPE.WARNING,
+                        title:"WARNING",
+                        textBody:response.payload.message,
+                        autoClose: true
+                    });
+                }
+                   
+                
             }
         };
 

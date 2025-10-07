@@ -16,6 +16,9 @@ import SingleChatScreen from "./src/screens/SingleChatScreen";
 import { WebSocketProvider } from "./src/socket/WebSocketProvider";
 import NewChatScreen from "./src/screens/NewChatScreen";
 import NewContactScreen from "./src/screens/NewContactScreen";
+import { useWebSocketPing } from "./src/socket/UseWebSocketPing";
+import { useContext } from "react";
+import { AuthContext, AuthProvider } from "./src/components/AuthProvider";
 
 
 export type RootStackParamList = {
@@ -37,33 +40,54 @@ export type RootStackParamList = {
   NewContactScreen: undefined;
 };
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
-
-export default function App() {
-  const USER_ID = 1;
+function ChatApp() {
+  //useWebSocketPing(4000 * 60);
+  const auth = useContext(AuthContext);
   return (
-    <AlertNotificationRoot>
-      <WebSocketProvider userId={USER_ID}>
-        <ThemeProvider>
-          <UserRegistrationProvider>
-            <NavigationContainer>
-              <Stack.Navigator initialRouteName="HomeScreen" screenOptions={{ animation: "fade" }}>
+    <WebSocketProvider userId={auth? Number(auth.userId) : 0}>
+      <ThemeProvider>
+        <UserRegistrationProvider>
+          <NavigationContainer>
+            <Stack.Navigator initialRouteName="SplashScreen" screenOptions={{ animation: "fade" }}>
+              {auth?.isLoading ? (
+
                 <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false }} />
+
+              ) : auth?.userId === null ? (
+                 <Stack.Group>
+                {/* // when user is not logged in */}
                 <Stack.Screen name="SignUpScreen" component={SignUpScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="ContactScreen" component={ContactScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="AvatarScreen" component={AvatarScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="SignInScreen" component={SignInScreen} options={{ headerShown: false }} />
+                </Stack.Group>
+               ) : ( 
+               <Stack.Group>
+               {/* // when user is logged in */}
                 <Stack.Screen name="HomeScreen" component={HomeTabs} options={{ headerShown: false }} />
                 <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
                 <Stack.Screen name="SingleChatScreen" component={SingleChatScreen} />
                 <Stack.Screen name="SettingScreen" component={SettingScreen} />
                 <Stack.Screen name="NewChatScreen" component={NewChatScreen} />
                 <Stack.Screen name="NewContactScreen" component={NewContactScreen} />
-              </Stack.Navigator>
-            </NavigationContainer>
-          </UserRegistrationProvider>
-        </ThemeProvider>
-      </WebSocketProvider>
+                </Stack.Group>
+
+              )}
+            </Stack.Navigator>
+          </NavigationContainer>
+        </UserRegistrationProvider>
+      </ThemeProvider>
+    </WebSocketProvider>
+  );
+}
+const Stack = createNativeStackNavigator<RootStackParamList>();
+
+export default function App() {
+  return (
+    <AlertNotificationRoot>
+      <AuthProvider>
+        <ChatApp />
+      </AuthProvider>
     </AlertNotificationRoot>
   );
 }

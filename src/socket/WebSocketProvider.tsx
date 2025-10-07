@@ -23,7 +23,7 @@ export const WebSocketProvider: React.FC<{children: React.ReactNode;userId: numb
 
     useEffect(() => {
 
-        if(socketRef.current && socketRef.current.readyState === WebSocket.OPEN){
+        if(userId === 0 || (socketRef.current && socketRef.current.readyState === WebSocket.OPEN)){
             return;
         }
         const socket = new WebSocket(`wss://${process.env.EXPO_PUBLIC_WS_URL}/ChatApp/chat?userId=${userId}`); //wss=> https
@@ -31,14 +31,14 @@ export const WebSocketProvider: React.FC<{children: React.ReactNode;userId: numb
         socketRef.current = socket;
 
         socket.onopen = () => {
-
+            console.log(new Date().toLocaleTimeString());
             console.log("WebSocket connected....");
             setConnected(true);
 
         };
 
         socket.onclose = () => {
-
+               console.log(new Date().toLocaleTimeString());
             console.log("WebSocket disconnected....");
             setConnected(false);
 

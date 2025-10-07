@@ -26,7 +26,7 @@
     "react-native-alert-notification": "^0.4.2",
     "react-native-animated-input": "^1.0.9",
     "react-native-country-codes-picker": "^2.3.5",
-    "react-native-country-picker-modal": "^2.0.0",
+    "react-native-country-picker-modal": "^0.8.0",
     "react-native-floating-label-input": "^1.4.3",
     "react-native-reanimated": "^4.1.0",
     "react-native-safe-area-context": "^5.4.0",
